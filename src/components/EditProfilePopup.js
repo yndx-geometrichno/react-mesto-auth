@@ -37,7 +37,7 @@ export default function EditProfilePopup({ isOpen, onUpdateUser }) {
         title="Редактировать профиль"
         isOpen={isOpen}
         onSubmit={(e) => e.preventDefault()}
-        buttonText={appContext.isLoading ? "Сохранение..." : "Сохранить"}
+        buttonText={appContext.isSubmitLoading ? "Сохранение..." : "Сохранить"}
         isValid={formState.isValid}
         onClick={onSubmit}
       >

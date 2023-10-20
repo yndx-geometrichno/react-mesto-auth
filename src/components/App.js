@@ -1,28 +1,40 @@
 import { useState, useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
-import { api } from "../utils/Api";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { AppContext } from "../contexts/AppContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteCardPopup from "./DeleteCardPopup";
 import ContentLoading from "./ContentLoading";
+import ProtectedRoute from "./ProtectedRoute";
+import Register from "./Register";
+import Login from "./Login";
+import InfoTooltip from "./InfoTooltip";
+import { api } from "../utils/Api";
+import { register, authorize, checkToken } from "../utils/auth";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { AppContext } from "../contexts/AppContext";
 
 function App() {
-  const [isContentLoading, setContentLoading] = useState(true);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isDeleteCardPopupOpen, setDeleteCardPopupOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
+  const [isContentLoading, setContentLoading] = useState(true);
+  const [isSubmitLoading, setSubmitLoading] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [cardToDelete, setCardToDelete] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState({});
+  const [userEmail, setUserEmail] = useState("");
+  const [infoTooltipMessage, setInfoTooltipMessage] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -37,15 +49,22 @@ function App() {
       .finally(() => {
         setContentLoading(false);
       });
+    if (localStorage.getItem("jwt")) {
+      let jwt = localStorage.getItem("jwt");
+      checkToken(jwt).then((res) => {
+        setUserEmail(res.data.email);
+        setLoggedIn(true);
+      });
+    }
   }, []);
 
   function handleSubmit(request) {
-    setIsLoading(true);
+    setSubmitLoading(true);
     request()
       .then(closeAllPopups)
       .catch(console.error)
       .finally(() => {
-        setIsLoading(false);
+        setTimeout(setSubmitLoading, 1000, false);
       });
   }
 
@@ -54,6 +73,7 @@ function App() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setDeleteCardPopupOpen(false);
+    setInfoTooltipPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -130,24 +150,90 @@ function App() {
     handleSubmit(makeRequset);
   }
 
+  function onLogin(password, email) {
+    authorize(password, email)
+      .then((res) => {
+        if (res.token) {
+          navigate("/", { replace: true });
+          setUserEmail(email);
+          setLoggedIn(true);
+        }
+      })
+      .catch((err) => {
+        handleInfoToooltipPopup(err);
+      });
+  }
+
+  function handleInfoToooltipPopup(message) {
+    setInfoTooltipMessage(message);
+    setInfoTooltipPopupOpen(true);
+  }
+
+  function onRegister(password, email) {
+    register(password, email)
+      .then((res) => {
+        if (!res.password) {
+          throw new Error("");
+        }
+        setInfoTooltipPopupOpen(true);
+        navigate("/sign-in", { replace: true });
+      })
+      .catch((err) => {
+        handleInfoToooltipPopup(err);
+        setInfoTooltipPopupOpen(true);
+      });
+  }
+
+  function onSignOut() {
+    localStorage.removeItem("jwt");
+    setLoggedIn(false);
+    setUserEmail("");
+  }
+
   return (
-    <AppContext.Provider value={{ isLoading, onClose: closeAllPopups }}>
+    <AppContext.Provider
+      value={{
+        isSubmitLoading,
+        isLoggedIn,
+        userEmail,
+        setUserEmail,
+        onClose: closeAllPopups,
+      }}
+    >
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
           <div className="page__container">
-            <Header />
+            <Header onSignOut={onSignOut} />
             {isContentLoading ? (
               <ContentLoading />
             ) : (
-              <Main
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                onCardLike={handleCardLike}
-                onCardDelete={handleDeleteCardClick}
-                cards={cards}
-              />
+              <Routes>
+                <Route
+                  path="/sign-up"
+                  element={
+                    <Register
+                      onRegister={onRegister}
+                      setInfoTooltipPopupOpen={setInfoTooltipPopupOpen}
+                    />
+                  }
+                />
+                <Route path="/sign-in" element={<Login onLogin={onLogin} />} />
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute
+                      onEditProfile={handleEditProfileClick}
+                      onAddPlace={handleAddPlaceClick}
+                      onEditAvatar={handleEditAvatarClick}
+                      onCardClick={handleCardClick}
+                      onCardLike={handleCardLike}
+                      onCardDelete={handleDeleteCardClick}
+                      cards={cards}
+                      element={Main}
+                    />
+                  }
+                />
+              </Routes>
             )}
             <Footer />
           </div>
@@ -168,6 +254,10 @@ function App() {
             onCardDelete={handleDeleteCardSubmit}
           />
           <ImagePopup card={selectedCard} />
+          <InfoTooltip
+            isOpen={isInfoTooltipPopupOpen}
+            message={infoTooltipMessage}
+          />
         </div>
       </CurrentUserContext.Provider>
     </AppContext.Provider>

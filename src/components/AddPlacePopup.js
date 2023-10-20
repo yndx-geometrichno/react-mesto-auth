@@ -30,7 +30,7 @@ export default function AddPlacePopup({ isOpen, onSubmitCard }) {
         title="Новое место"
         isOpen={isOpen}
         onSubmit={(e) => e.preventDefault()}
-        buttonText={appContext.isLoading ? "Сохранение..." : "Сохранить"}
+        buttonText={appContext.isSubmitLoading ? "Сохранение..." : "Сохранить"}
         onClick={onSubmit}
         isValid={formState.isValid}
       >
