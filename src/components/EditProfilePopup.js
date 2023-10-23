@@ -22,7 +22,7 @@ export default function EditProfilePopup({ isOpen, onUpdateUser }) {
       name: data.profileName.trim(),
       about: data.about.trim(),
     });
-    methods.clearErrors({ profileName: "", about: ""})
+    methods.reset({ profileName: "", about: ""})
   });
 
   useEffect(() => {
