@@ -22,13 +22,12 @@ export default function EditProfilePopup({ isOpen, onUpdateUser }) {
       name: data.profileName.trim(),
       about: data.about.trim(),
     });
-    methods.reset({ profileName: "", about: ""})
+    methods.clearErrors({ profileName: "", about: ""})
   });
 
   useEffect(() => {
     methods.setValue(profileName_validation.name, currentUser.name);
     methods.setValue(about_validation.name, currentUser.about);
-    methods.clearErrors();
   }, [isOpen, currentUser, methods]);
 
   return (

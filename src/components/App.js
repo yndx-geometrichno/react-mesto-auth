@@ -55,12 +55,13 @@ function App() {
         .then((res) => {
           setUserEmail(res.data.email);
           setLoggedIn(true);
+          navigate("/", { replace: true });
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, []);
+  }, [navigate]);
 
   function handleSubmit(request) {
     setSubmitLoading(true);
@@ -110,9 +111,6 @@ function App() {
         .then((newCard) => {
           setCards([newCard, ...cards]);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     }
 
     handleSubmit(makeRequest);
@@ -132,9 +130,6 @@ function App() {
             state.filter((c) => c._id !== cardToDelete._id && c)
           );
         })
-        .catch((err) => {
-          console.log(err);
-        });
     }
 
     handleSubmit(makeRequest);
@@ -161,9 +156,6 @@ function App() {
       return api
         .updateUserInfo(inputValues)
         .then(setCurrentUser)
-        .catch((err) => {
-          console.log(err);
-        });
     }
 
     handleSubmit(makeRequset);

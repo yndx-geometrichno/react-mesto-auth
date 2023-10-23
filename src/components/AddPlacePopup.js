@@ -17,8 +17,11 @@ export default function AddPlacePopup({ isOpen, onSubmitCard }) {
       name: data.cardName,
       link: data.url,
     });
-    methods.reset({cardName: "", url: ""})
   });
+
+  useEffect(() => {
+    methods.reset({cardName: "", url: ""})
+  }, [isOpen, methods])
   
   return (
     <FormProvider {...methods}>

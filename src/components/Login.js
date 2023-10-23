@@ -7,7 +7,6 @@ export default function Login({ onLogin }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(email, password);
     onLogin(password, email);
   }
 
