@@ -51,10 +51,14 @@ function App() {
       });
     if (localStorage.getItem("jwt")) {
       let jwt = localStorage.getItem("jwt");
-      checkToken(jwt).then((res) => {
-        setUserEmail(res.data.email);
-        setLoggedIn(true);
-      });
+      checkToken(jwt)
+        .then((res) => {
+          setUserEmail(res.data.email);
+          setLoggedIn(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, []);
 
@@ -101,9 +105,14 @@ function App() {
 
   function handleCardSubmit(inputValues) {
     function makeRequest() {
-      return api.addNewCard(inputValues).then((newCard) => {
-        setCards([newCard, ...cards]);
-      });
+      return api
+        .addNewCard(inputValues)
+        .then((newCard) => {
+          setCards([newCard, ...cards]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     handleSubmit(makeRequest);
@@ -116,11 +125,16 @@ function App() {
 
   function handleDeleteCardSubmit() {
     function makeRequest() {
-      return api.deleteCard(cardToDelete._id).then(() => {
-        setCards((state) =>
-          state.filter((c) => c._id !== cardToDelete._id && c)
-        );
-      });
+      return api
+        .deleteCard(cardToDelete._id)
+        .then(() => {
+          setCards((state) =>
+            state.filter((c) => c._id !== cardToDelete._id && c)
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     handleSubmit(makeRequest);
@@ -144,7 +158,12 @@ function App() {
 
   function handleProfileSubmit(inputValues) {
     function makeRequset() {
-      return api.updateUserInfo(inputValues).then(setCurrentUser);
+      return api
+        .updateUserInfo(inputValues)
+        .then(setCurrentUser)
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     handleSubmit(makeRequset);
@@ -175,13 +194,14 @@ function App() {
         if (!res.password) {
           throw new Error("");
         }
-        setInfoTooltipPopupOpen(true);
         navigate("/sign-in", { replace: true });
       })
       .catch((err) => {
         handleInfoToooltipPopup(err);
+      })
+      .finally(() => {
         setInfoTooltipPopupOpen(true);
-      });
+      })
   }
 
   function onSignOut() {

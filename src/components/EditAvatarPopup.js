@@ -14,11 +14,8 @@ export default function EditAvatarPopup({ isOpen, onUpdateAvatar }) {
 
   const onSubmit = methods.handleSubmit((data) => {
     onUpdateAvatar(data);
+    methods.reset({avatar: ""})
   });
-
-  useEffect(() => {
-    formState.isSubmitted && methods.reset();
-  }, [isOpen, formState.isSubmitted]);
 
   return (
     <FormProvider {...methods}>
@@ -26,10 +23,9 @@ export default function EditAvatarPopup({ isOpen, onUpdateAvatar }) {
         name="profile-pic-update"
         title="Обновить аватар"
         isOpen={isOpen}
-        onSubmit={(e) => e.preventDefault()}
         buttonText={appContext.isSubmitLoading ? "Сохранение..." : "Сохранить"}
         isValid={formState.isValid}
-        onClick={onSubmit}
+        onSubmit={onSubmit}
       >
         <Input {...avatar_validation} />
       </PopupWithForm>

@@ -5,8 +5,7 @@ import { AppContext } from "../contexts/AppContext";
 export default function DeleteCardPopup({ isOpen, onCardDelete }) {
   const appContext = useContext(AppContext);
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit() {
     onCardDelete();
   }
 

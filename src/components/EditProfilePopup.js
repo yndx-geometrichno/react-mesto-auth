@@ -22,6 +22,7 @@ export default function EditProfilePopup({ isOpen, onUpdateUser }) {
       name: data.profileName.trim(),
       about: data.about.trim(),
     });
+    methods.reset({ profileName: "", about: ""})
   });
 
   useEffect(() => {
@@ -36,10 +37,9 @@ export default function EditProfilePopup({ isOpen, onUpdateUser }) {
         name="profile"
         title="Редактировать профиль"
         isOpen={isOpen}
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={onSubmit}
         buttonText={appContext.isSubmitLoading ? "Сохранение..." : "Сохранить"}
         isValid={formState.isValid}
-        onClick={onSubmit}
       >
         <Input {...profileName_validation} />
         <Input {...about_validation} />

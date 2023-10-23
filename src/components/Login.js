@@ -14,6 +14,8 @@ export default function Login({ onLogin }) {
   return (
     <SignForm
       header="Вход"
+      email={email}
+      password={password}
       onSubmit={handleSubmit}
       setEmail={setEmail}
       setPassword={setPassword}

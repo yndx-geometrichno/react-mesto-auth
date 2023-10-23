@@ -9,11 +9,15 @@ export default function PopupWithForm({
   isOpen,
   onSubmit,
   buttonText,
-  onClick,
   isValid,
 }) {
   const appContext = useContext(AppContext);
   usePopupClose(isOpen, appContext.onClose);
+
+  function handleSubmit(e) {
+    e.preventDefault(e);
+    onSubmit();
+  }
 
   return (
     <div className={`popup popup_type_${name} ${isOpen ? "popup_opened" : ""}`}>
@@ -24,7 +28,7 @@ export default function PopupWithForm({
           action="#"
           className="popup__form popup__form-profile"
           noValidate
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
         >
           {children}
           <button
@@ -33,7 +37,6 @@ export default function PopupWithForm({
             className={`popup__save-btn ${
               !isValid && "popup__save-btn_type_disabled"
             }`}
-            onClick={onClick}
             disabled={!isValid}
           >
             {buttonText}

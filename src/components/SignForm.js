@@ -3,6 +3,8 @@ import React from "react";
 export default function SignForm({
   header,
   buttonText,
+  email,
+  password,
   children,
   onSubmit,
   setEmail,
@@ -16,12 +18,14 @@ export default function SignForm({
           type="email"
           className="sign__form-input"
           placeholder="Email"
+          value={email}
           onChange={({ target }) => setEmail(target.value)}
         ></input>
         <input
           type="password"
           className="sign__form-input"
           placeholder="Пароль"
+          value={password}
           onChange={({ target }) => setPassword(target.value)}
         ></input>
         <button className="sign__button" type="submit">

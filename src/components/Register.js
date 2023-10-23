@@ -12,21 +12,21 @@ export default function Register({ onRegister }) {
   }
 
   return (
-    <>
-      <SignForm
-        header={"Регистрация"}
-        buttonText={"Зарегистрироваться"}
-        onSubmit={handleSubmit}
-        setEmail={setEmail}
-        setPassword={setPassword}
-      >
-        <p className="sign__link-container">
-          Уже зарегистрированы?
-          <Link to="/sign-in" className="sign__link">
-            Войти
-          </Link>
-        </p>
-      </SignForm>
-    </>
+    <SignForm
+      header={"Регистрация"}
+      buttonText={"Зарегистрироваться"}
+      email={email}
+      password={password}
+      onSubmit={handleSubmit}
+      setEmail={setEmail}
+      setPassword={setPassword}
+    >
+      <p className="sign__link-container">
+        Уже зарегистрированы?
+        <Link to="/sign-in" className="sign__link">
+          Войти
+        </Link>
+      </p>
+    </SignForm>
   );
 }

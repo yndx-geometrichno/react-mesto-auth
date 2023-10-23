@@ -17,21 +17,17 @@ export default function AddPlacePopup({ isOpen, onSubmitCard }) {
       name: data.cardName,
       link: data.url,
     });
+    methods.reset({cardName: "", url: ""})
   });
-
-  useEffect(() => {
-    formState.isSubmitted && methods.reset();
-  }, [isOpen]);
-
+  
   return (
     <FormProvider {...methods}>
       <PopupWithForm
         name="card"
         title="Новое место"
         isOpen={isOpen}
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={onSubmit}
         buttonText={appContext.isSubmitLoading ? "Сохранение..." : "Сохранить"}
-        onClick={onSubmit}
         isValid={formState.isValid}
       >
         <Input {...cardName_validation} />
