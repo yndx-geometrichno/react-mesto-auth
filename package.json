@@ -1,7 +1,7 @@
 {
   "name": "mesto-react",
   "version": "0.1.0",
-  "homepage": "https://yndx-geometrichno.github.io/react-mesto-auth/",
+  "homepage": "https://yndx-geometrichno.github.io/",
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",

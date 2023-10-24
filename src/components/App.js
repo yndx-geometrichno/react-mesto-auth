@@ -60,8 +60,6 @@ function App() {
         .catch((err) => {
           console.log(err);
         });
-    } else {
-      navigate('/sign-in')
     }
   }, [navigate]);
 
